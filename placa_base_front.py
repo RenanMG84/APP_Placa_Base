@@ -74,7 +74,7 @@ class Frm_Esforcos(customtkinter.CTkToplevel):
         f_cort = self.ent_cort.get()
         mom_fle = self.ent_mom.get()
     
-""""
+
 #abre janela materiais
 def frm_materiais():
     frame_mat = CTkToplevel(Main)
@@ -109,6 +109,6 @@ def frm_materiais():
     ent_fu_chumb = CTkEntry(frame_mat, width=60, textvariable= str_fu_chumb)
     ent_fu_chumb.insert(1, fu_chumb)
     ent_fu_chumb.grid(row=8, column=1, padx=10, pady=2)
-   """
+ 
 app = Main()
 app.mainloop()
