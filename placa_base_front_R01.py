@@ -2,6 +2,7 @@ import tkinter as tk
 import customtkinter
 from tkinter import *
 from customtkinter import *
+from PIL import Image
 
 class MainWindow(customtkinter.CTk):
     def __init__(self):
@@ -128,6 +129,44 @@ class Materiais(customtkinter.CTkToplevel):
         passa_fy_chumb = self.ent_fy_chumb.get()
         passa_fu_chumb = self.ent_fu_chumb.get()
         self.master.atualiza_materiais(passa_fck, passa_fy_pb, passa_fu_pb, passa_fy_chumb, passa_fu_chumb)
+        self.destroy()
+
+class PlacaBase(customtkinter.CTkToplevel):
+    def __init__(self, master):
+        super().__init__(master)
+        self.title("Esforços")
+        self.geometry('250x270+500+500')
+
+        #Imagem da placa
+        my_image = customtkinter.CTkImage(light_image=Image.open("placa2.png"), size=(30, 30))
+        image_label = customtkinter.CTkLabel(self, image=my_image).pack()  # display image with a CTkLabel
+
+        self.lbl_for_axial = CTkLabel(self, text='Força axial (kN)')
+        self.lbl_for_axial.pack(padx=5, pady=5)
+        self.txt_forca = CTkEntry(self, width=60)
+        self.txt_forca.insert(0, self.master.axial.get())
+        self.txt_forca.pack(padx=5, pady=5)
+
+        self.lbl_for_cort = CTkLabel(self, text='Força cortante (kN)')
+        self.lbl_for_cort.pack(padx=5, pady=5)
+        self.txt_cort = CTkEntry(self, width=60)
+        self.txt_cort.insert(0, self.master.cortante.get())
+        self.txt_cort.pack(padx=5, pady=5)
+
+        self.lbl_for_mom = CTkLabel(self, text='Momento Fletor (kN)')
+        self.lbl_for_mom.pack(padx=5, pady=5)
+        self.txt_mom = CTkEntry(self, width=60)
+        self.txt_mom.insert(0, self.master.momento.get())
+        self.txt_mom.pack(padx=5, pady=5)
+
+        self.btn_pass = CTkButton(self, text= "Ok", corner_radius=32, border_width=2, border_color='white', command=self.passa_valores)
+        self.btn_pass.pack(side=BOTTOM, fill='y')
+
+    def passa_valores(self):
+        passa_axial = self.txt_forca.get()
+        passa_cort = self.txt_cort.get()
+        passa_mom = self.txt_mom.get()
+        self.master.atualiza_esforcos(passa_axial, passa_cort, passa_mom)
         self.destroy()
 
 if __name__ == "__main__":
