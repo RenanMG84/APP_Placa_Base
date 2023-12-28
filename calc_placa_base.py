@@ -3,7 +3,7 @@ import math
 
 #unidades = sempre usar kN e cm para cálculo! Converter as unidades apenas na apresentação dos resultados
 class Calc_Placa_Base_Souza():
-    def __init__(self, momento, axial, cortante, b, l, a2_conc, fck, fy_pb, fu_pb, fy_chumb, fu_chumb, d_chumb, d, bf, tf, vinculo_pb):
+    def __init__(self, momento, axial, cortante, b, l, a2_conc, fck, fy_pb, fu_pb, fy_chumb, fu_chumb, d_chumb, d, bf, vinculo_pb, a1_pb, qtd_chumb, neta1, neta2, neta3, alpha):
         self.momento = momento
         self.axial = axial
         self.cortante = cortante
@@ -18,8 +18,13 @@ class Calc_Placa_Base_Souza():
         self.d_chumb = d_chumb
         self.d = d
         self.bf = bf
-        self.tf = tf
+        self.qtd_chumb = qtd_chumb
         self.vinculo_pb = vinculo_pb 
+        self.a1_pb = a1_pb
+        self.neta1 = neta1
+        self.neta2 = neta2
+        self.neta3 = neta3
+        self.alpha = alpha
 
     #FUNÇÕES--------------------------------------------------------------------------------------     
 
@@ -141,17 +146,101 @@ class Calc_Placa_Base_Souza():
     #calcula placa com grande excentricidade
     def pb_eng_gra(self):
         print("grande excentricidade")
+        y = 0 
+        a1 = self.b * self.l
+        #tensão resistente no concreto
+        fpd = (self.fck / (1.4*1.4))* math.sqrt((self.a2_conc/ a1))
+        g = (self.l / 2.0) - self.a1_pb
+        hlinha = self.l - self.a1_pb
+        flinha = (fpd * self.b * hlinha) / 2.0
+        y1 = (flinha + math.sqrt(math.pow(flinha, 2.0) - 4*((fpd*self.b)/6.0)*(self.axial*g + self.momento))) / ((fpd * self.b) / 3.0)
+        y2 = (flinha - math.sqrt(math.pow(flinha, 2.0) - 4*((fpd*self.b)/6.0)*(self.axial*g + self.momento))) / ((fpd * self.b) / 3.0)
+
+        if (y1 > 0) and (y1 <= self.b):
+            y = y1
+        else:
+            y = y2
+
+        #Espessura da placa de base
+        m = (self.l - 0.95*self.d) / 2.0
+        n = (self.b - 0.8 * self.bf) / 2.0
+        aux = max(m, n)
+        mmax = (fpd * math.pow(aux, 2.0)) / 2.0
+        t = math.sqrt((4.4*mmax) / self.fy_pb)
+        
+        self.chumb_eng(y, fpd)
+        
+        print(m, n, aux, mmax, t)
 
     #calcula chumbador p/ placa de base articulada
     def chumb_art(self):
         print("chumbador articulado")
+        #area necessária dos chumbadores
+        acsnec = (1.35 * self.cortante) / (0.4 * self.fu_chumb)
+        #area de um chumbador
+        acs = (math.pi*math.pow(self.d_chumb, 2.0)) / 4.0
+        #qtd mínima de chumbadores
+        qtd_min_chumb = acsnec / acs
+        #comprimento mínimo do chumbador
+        l_chumb = 12 * self.d_chumb
 
     #calcula chumbador p/ placa de base engastada
-    def chumb_eng(self):
+    def chumb_eng(self, y, fpd):
         print("chumbador engastado")
+        ver = ""
+        self.y = y
+        self.fpd = fpd
+
+        #TRAÇÃO---------------------------------------
+        #força de tração nos chumbadores
+        t = ((fpd * self.b * y) / 2.0 ) - self.axial
+        #area de um chumbador
+        acs = (math.pi*math.pow(self.d_chumb, 2.0)) / 4.0
+        #num de chumbadores do lado tracionado
+        nt = self.qtd_chumb / 2.0
+        #força de tração em um chumbador
+        t_chumb = t / nt #kN
+        #tensão em cada chumbador
+        ft_chumb = t_chumb / acs #kN/cm2
+        #tensão limite para os chumbadores
+        ftu_lim_chumb = 0.56 * self.fu_chumb
+
+        
+        #CISALHAMENTO-------------------------------
+        #força cortante em cada chumbador
+        v_chumb = self.cortante / self.qtd_chumb
+        #tensão em cada chumbador
+        fv_chumb = v_chumb / acs
+        #tensão limite em cada chumbador
+        fvu_lim_chumb = 0.3 * self.fu_chumb
+
+        
+        #INTERÇÃO ENTRE OS ESFORÇOS -------------------
+        itr = math.pow((ft_chumb / ftu_lim_chumb), 2.0) + math.pow((fv_chumb / fvu_lim_chumb), 2.0)
+
+        if itr <= 1.0:
+            ver = "OK"
+        else:
+            ver = "Chumbador não atende!"
+
+        #COMPRIMENTO DE ANCORAGEM DO CHUMBADOR --------
+        self.fck = self.fck * 10 #convertendo de kN/cm2 para MPA
+        self.fy_chumb = self.fy_chumb * 10
+        fctm = 0.3 * math.pow(self.fck, 0.6667)
+        fctkinf = 0.7* fctm
+        fctd = fctkinf / 1.4
+        fbd = self.neta1 * self.neta2 * self.neta3 * fctd
+        lb = ((self.d_chumb * self.fy_chumb) / 1.1) / (4 * fbd) #cm
+        lbmin = 40 * self.d_chumb
+
+        if lb < lbmin:
+            lb = lbmin
+
+        #ancoragem necessaria
+        lbnec = self.alpha * lb
 
 
-placa = Calc_Placa_Base_Souza(550, 45, 2, 16, 60, 720, 2, 25, 40, 25, 40, 1.25, 40.3, 14, 1.25, "engastado")
+placa = Calc_Placa_Base_Souza(12047, 14.9, 44, 32, 42, 1344, 2, 25, 40, 25, 40, 2.54, 24.6, 25.6, "engastado", 4.35, 10, 1, 1, 1, 0.7)
 placa.define_art_eng()
 
 
