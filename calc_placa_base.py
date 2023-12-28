@@ -19,12 +19,32 @@ class Calc_Placa_Base_Souza():
         self.d = d
         self.bf = bf
         self.tf = tf
-        self.vinculo_pb = vinculo_pb   
+        self.vinculo_pb = vinculo_pb 
 
     #FUNÇÕES--------------------------------------------------------------------------------------     
 
+    #Define se a placa é rotulada ou engastada
+    def define_art_eng(self):
+        if self.vinculo_pb == "rotulado":
+            self.pb_rot()
+        else:
+            self.define_pb_eng()
+       
+    #Define o tipo de calculo para placas engastadas
+    def define_pb_eng(self):
+         #calcula excentricidade da placa
+        exc = self.momento / self.axial
+        print(exc)
+        if exc <= (self.l / 6.0):
+            self.pb_eng_peq()
+        elif ((self.l / 6.0) < exc) and (exc <= (self.l / 3.0)):
+            self.pb_eng_med()
+        elif (exc > (self.l / 3.0)):
+            self.pb_eng_gra()
+
     #Calcula placa de base rotulada
-    def calc_pb_rot(self):
+    def pb_rot(self):
+        print("rotulado")
         c = 0 #balanço interno da placa
         #determinação da área da placa de base
         a11 = (1.0 / self.a2_conc) * math.pow((self.axial / (0.5 * self.fck)), 2.0)
@@ -45,7 +65,6 @@ class Calc_Placa_Base_Souza():
             self.h = self.h + 1.0
         if self.b % 2.0 != 0:
             self.b = self.b + 1.0
-
 
         #Balanço interno C da placa
         #determinação de Ah
@@ -68,37 +87,52 @@ class Calc_Placa_Base_Souza():
         t3 = c * math.sqrt((2.2 *self.axial) / (self.fy_pb * ah))
         t = max(t1, t2, t3)
        
-    #Calcula placa base engastada - Pede a função específica para cada tipo 
-    def calc_pb_eng(self):
-        pass
-
     #calcula placa com pequena excentricidade
-    def pb_eng_peq():
-        pass
+    def pb_eng_peq(self):
+        print("pequena excentricidade")
+        ver1 = "" #variável utilizada para verificar a condição de resistência do concreto
+        a1 = self.b * self.l
+        c = self.l / 2.0
+        i = (self.b * math.pow((self.l), 3.0)) / 12.0
+        #tensão solicitante no concreto
+        fpd = (self.axial / (self.l * self.b)) + ((self.momento * c) / i)
+        #tensão resistente no concreto
+        sigcrd = (self.fck / (1.4*1.4))* math.sqrt((self.a2_conc/ a1))
 
+        if fpd <= sigcrd:
+            ver1 = "OK"
+        else:
+            ver1 = "FALHOU - Verificar a tensão máxima no concreto"
+
+        #Espessura da placa de base
+        m = (self.l - 0.95*self.d) / 2.0
+        n = (self.b - 0.8 * self.bf) / 2.0
+        aux = max(m, n)
+        mmax = (fpd * math.pow(aux, 2.0)) / 2.0
+        t = math.sqrt((4.4*mmax) / self.fy_pb)
+
+
+        print(m, n, aux, mmax, t)
+        
     #calcula placa com media excentricidade
-    def pb_eng_med(mom, ax, l, d_chumb, d_perfil, bf_perfil, b,):
-        pass
+    def pb_eng_med(self):
+        print("media excentricidade")
+
     #calcula placa com grande excentricidade
-    def pb_eng_gra(mom, ax, l, d_chumb, d_perfil, bf_perfil, b,):
-        pass
+    def pb_eng_gra(self):
+        print("grande excentricidade")
 
     #calcula chumbador p/ placa de base articulada
-    def chumb_art():
-        pass
+    def chumb_art(self):
+        print("chumbador articulado")
 
     #calcula chumbador p/ placa de base engastada
-    def chumb_eng():
-        pass
-"""""
-    #chama a função "rotulado" ou "engastado"
-    if self.vinculo_pb == "rotulado":
-        calc_pb_rot()
-    else:
-        calc_pb_eng() """
+    def chumb_eng(self):
+        print("chumbador engastado")
 
-placa = Calc_Placa_Base_Souza(0.0, 705, 100, 0, 0, 720, 2, 25, 40, 25, 40, 1.25, 25, 17, 1.25, "rotulado")
-placa.calc_pb_rot()
+
+placa = Calc_Placa_Base_Souza(224, 132, 2, 15, 32, 480, 2, 25, 40, 25, 40, 1.25, 20.6, 10.2, 1.25, "engastado")
+placa.define_art_eng()
 
 
 
