@@ -109,14 +109,34 @@ class Calc_Placa_Base_Souza():
         n = (self.b - 0.8 * self.bf) / 2.0
         aux = max(m, n)
         mmax = (fpd * math.pow(aux, 2.0)) / 2.0
-        t = math.sqrt((4.4*mmax) / self.fy_pb)
-
-
-        print(m, n, aux, mmax, t)
+        t = math.sqrt((4.4*mmax) / self.fy_pb) 
         
     #calcula placa com media excentricidade
     def pb_eng_med(self):
         print("media excentricidade")
+        ver1 = "" #variável utilizada para verificar a condição de resistência do concreto
+        exc = self.momento / self.axial
+        a1 = self.b * self.l
+        y = 3*((self.l / 2.0) - exc)
+        #tensão solicitante no concreto
+        fpd = (2 * self.axial) / (y * self.b)
+        #tensão resistente no concreto
+        sigcrd = (self.fck / (1.4*1.4))* math.sqrt((self.a2_conc/ a1))
+
+        if fpd <= sigcrd:
+            ver1 = "OK"
+        else:
+            ver1 = "FALHOU - Verificar a tensão máxima no concreto"
+
+        #Espessura da placa de base
+        m = (self.l - 0.95*self.d) / 2.0
+        n = (self.b - 0.8 * self.bf) / 2.0
+        aux = max(m, n)
+        mmax = (fpd * math.pow(aux, 2.0)) / 2.0
+        t = math.sqrt((4.4*mmax) / self.fy_pb)
+
+        print(m, n, aux, mmax, t)
+
 
     #calcula placa com grande excentricidade
     def pb_eng_gra(self):
@@ -131,7 +151,7 @@ class Calc_Placa_Base_Souza():
         print("chumbador engastado")
 
 
-placa = Calc_Placa_Base_Souza(224, 132, 2, 15, 32, 480, 2, 25, 40, 25, 40, 1.25, 20.6, 10.2, 1.25, "engastado")
+placa = Calc_Placa_Base_Souza(550, 45, 2, 16, 60, 720, 2, 25, 40, 25, 40, 1.25, 40.3, 14, 1.25, "engastado")
 placa.define_art_eng()
 
 
