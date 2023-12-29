@@ -1,9 +1,10 @@
 import math
 
-
 #unidades = sempre usar kN e cm para cálculo! Converter as unidades apenas na apresentação dos resultados
 class Calc_Placa_Base_Souza():
-    def __init__(self, momento, axial, cortante, b, l, a2_conc, fck, fy_pb, fu_pb, fy_chumb, fu_chumb, d_chumb, d, bf, vinculo_pb, a1_pb, qtd_chumb, neta1, neta2, neta3, alpha):
+    def __init__(self, momento, axial, cortante, b, l, a2_conc, fck, fy_pb, fu_pb, \
+                 fy_chumb, fu_chumb, d_chumb, d, bf, vinculo_pb, a1_pb, qtd_chumb, \
+                    neta1, neta2, neta3, alpha):
         self.momento = momento
         self.axial = axial
         self.cortante = cortante
@@ -25,6 +26,7 @@ class Calc_Placa_Base_Souza():
         self.neta2 = neta2
         self.neta3 = neta3
         self.alpha = alpha
+        self.diam = [0.635, 0.8, 1.27, 1.59, 1.91, 2.22, 2.54, 3.18, 4.13, 4.45] #diametros comerciais de chapas
 
     #FUNÇÕES--------------------------------------------------------------------------------------     
 
@@ -91,6 +93,10 @@ class Calc_Placa_Base_Souza():
         t2 = n * math.sqrt((2.2 * self.axial) / (self.fy_pb * self.b * self.h))
         t3 = c * math.sqrt((2.2 *self.axial) / (self.fy_pb * ah))
         t = max(t1, t2, t3)
+        for i in self.diam:
+            if i > t:
+                t = i
+                break
        
     #calcula placa com pequena excentricidade
     def pb_eng_peq(self):
@@ -114,7 +120,12 @@ class Calc_Placa_Base_Souza():
         n = (self.b - 0.8 * self.bf) / 2.0
         aux = max(m, n)
         mmax = (fpd * math.pow(aux, 2.0)) / 2.0
-        t = math.sqrt((4.4*mmax) / self.fy_pb) 
+        t = math.sqrt((4.4*mmax) / self.fy_pb)         
+        for i in self.diam:
+            if i > t:
+                t = i
+                break
+
         
     #calcula placa com media excentricidade
     def pb_eng_med(self):
@@ -139,8 +150,11 @@ class Calc_Placa_Base_Souza():
         aux = max(m, n)
         mmax = (fpd * math.pow(aux, 2.0)) / 2.0
         t = math.sqrt((4.4*mmax) / self.fy_pb)
+        for i in self.diam:
+            if i > t:
+                t = i
+                break
 
-        print(m, n, aux, mmax, t)
 
 
     #calcula placa com grande excentricidade
@@ -167,10 +181,14 @@ class Calc_Placa_Base_Souza():
         aux = max(m, n)
         mmax = (fpd * math.pow(aux, 2.0)) / 2.0
         t = math.sqrt((4.4*mmax) / self.fy_pb)
+        for i in self.diam:
+            if i > t:
+                t = i
+                break
         
         self.chumb_eng(y, fpd)
         
-        print(m, n, aux, mmax, t)
+        
 
     #calcula chumbador p/ placa de base articulada
     def chumb_art(self):
@@ -240,7 +258,8 @@ class Calc_Placa_Base_Souza():
         lbnec = self.alpha * lb
 
 
-placa = Calc_Placa_Base_Souza(12047, 14.9, 44, 32, 42, 1344, 2, 25, 40, 25, 40, 2.54, 24.6, 25.6, "engastado", 4.35, 10, 1, 1, 1, 0.7)
+#placa = Calc_Placa_Base_Souza(12047, 14.9, 44, 32, 42, 1344, 2, 25, 40, 25, 40, 2.54, 24.6, 25.6, "engastado", 4.35, 10, 1, 1, 1, 0.7)
+placa = Calc_Placa_Base_Souza(100, 500, 44, 32, 42, 1344, 2, 25, 40, 25, 40, 2.54, 24.6, 25.6, "engastado", 4.35, 10, 1, 1, 1, 0.7)
 placa.define_art_eng()
 
 
