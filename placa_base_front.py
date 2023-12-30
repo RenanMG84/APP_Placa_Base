@@ -7,7 +7,7 @@ from PIL import Image
 
 MainWindow = customtkinter.CTk()
 MainWindow.title("Cálculo de Placa de Base")
-MainWindow.geometry("1000x755+250+100")
+MainWindow.geometry("800x850+250+100")
 
 #VARIÁVEIS GLOBAIS
 check_var = tk.IntVar()
@@ -39,11 +39,11 @@ def radiobutton_event():
 
 #FRAMES MASTERS
 FrameSUP = CTkFrame(MainWindow, border_width= 2)
-FrameSUP.grid(row = 0 , column = 0, columnspan = 2)
+FrameSUP.grid(row = 0 , column = 0, padx = 5, columnspan = 2, sticky = 'nswe')
 FrameInfEsq = CTkFrame(MainWindow)
-FrameInfEsq.grid(row = 1 , column = 0, sticky = 'n')
+FrameInfEsq.grid(row = 1 , padx = (5, 0), column = 0, sticky = 'nswe')
 FrameInfDir = CTkFrame(MainWindow)
-FrameInfDir.grid(row = 1, column =1, sticky = 'n')
+FrameInfDir.grid(row = 1, column =1, padx = (0,5), sticky = 'nswe')
 
 
 
@@ -185,14 +185,14 @@ image_label.grid(row = 6, column = 0, columnspan = 6, padx = 10, pady = (0,10))
 
 #RESULTADOS
 FrameRES = CTkFrame(FrameInfDir, border_width= 2)
-FrameRES.grid(row = 1, column = 1, pady = 5, sticky = 'n')
+FrameRES.grid(row = 1, column = 1, pady = 5, sticky = 'nswe')
 label_res = CTkLabel(FrameRES, text= 'RESULTADOS', text_color='blue')
 label_res.grid(row = 0 , column = 0, columnspan = 2, pady = 10)
 btn_cal = CTkButton(FrameRES, text='Calcular')
 btn_cal.grid(row = 1, column = 0, pady = 5)
 btn_apag = CTkButton(FrameRES, text='Apagar')
 btn_apag.grid(row = 1, column = 1, pady = 5)
-txt_res = CTkTextbox(FrameRES, width = 350, height= 500)
+txt_res = CTkTextbox(FrameRES, width = 350, height= 570)
 txt_res.grid(row =2, column = 0 , columnspan = 2, padx = 10, pady = (0,10))
 
 MainWindow.mainloop()
