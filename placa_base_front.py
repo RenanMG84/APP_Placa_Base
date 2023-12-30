@@ -14,15 +14,27 @@ check_var = tk.IntVar()
 radio_var = IntVar(value=0)
 
 def muda_status_botao():
- 
  if check_var.get() == 1: 
         entry_a2concr.configure(state = 'disabled', fg_color = 'gray')
         entry_a2concr.delete(0, 'end')
  else:
         entry_a2concr.configure(state = 'normal', fg_color = 'white')
 
+def plota_pb_art():
+     my_image = customtkinter.CTkImage(light_image=Image.open("placa_art.png"), size=(400, 400))
+     image_label = customtkinter.CTkLabel(FramePB, image=my_image, text='')  # display image with a CTkLabel
+     image_label.grid(row = 6, column = 0, columnspan = 6, padx = 10, pady = (0,10))
+
+def plota_pb_eng():
+     my_image = customtkinter.CTkImage(light_image=Image.open("placa_eng.png"), size=(400, 400))
+     image_label = customtkinter.CTkLabel(FramePB, image=my_image, text='')  # display image with a CTkLabel
+     image_label.grid(row = 6, column = 0, columnspan = 6, padx = 10, pady = (0,10))
+
 def radiobutton_event():
-    print("radiobutton toggled, current value:", radio_var.get())
+    if radio_var.get() == 1:
+         plota_pb_art()
+    else:
+         plota_pb_eng()
     
 
 #FRAMES MASTERS
@@ -157,13 +169,18 @@ entry_e = CTkEntry(FramePB, width=40)
 entry_e.grid(row = 2, column = 4, pady = (5, 10))
 label_mm5 = CTkLabel(FramePB, text = 'mm')
 label_mm5.grid(row = 2, column = 5, padx = 10)
+label_n_chum = CTkLabel(FramePB, text = "Qtd. total de chumbadores")
+label_n_chum.grid(row = 4, column = 3, stick = 'e', padx = 10)
+entry_n_chum = CTkEntry(FramePB, width=40)
+entry_n_chum.grid(row = 4, column = 4, pady = (5, 10))
 rad_rot = CTkRadioButton(FramePB, text= 'Articulada', command=radiobutton_event, variable= radio_var, value=1)
+rad_rot.select()
 rad_rot.grid(row = 5, column = 1, columnspan = 3, pady = 10 )
 rad_eng = CTkRadioButton(FramePB, text= 'Engastada', command=radiobutton_event, variable= radio_var, value=2)
 rad_eng.grid(row = 5, column = 3, columnspan = 3, pady = 10)
 #IMAGEM PLACA DE BASE
-my_image = customtkinter.CTkImage(light_image=Image.open("placa.png"), size=(400, 400))
-image_label = customtkinter.CTkLabel(FramePB, image=my_image)  # display image with a CTkLabel
+my_image = customtkinter.CTkImage(light_image=Image.open("placa_art.png"), size=(400, 400))
+image_label = customtkinter.CTkLabel(FramePB, image=my_image, text='')  # display image with a CTkLabel
 image_label.grid(row = 6, column = 0, columnspan = 6, padx = 10, pady = (0,10))
 
 #RESULTADOS
