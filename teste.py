@@ -1,23 +1,16 @@
-import tkinter as tk
+import customtkinter
+from customtkinter import *
 
-def toggle_button_state():
-    if check_var.get() == 1:  # If the checkbox is checked
-        button.config(state=tk.NORMAL)  # Enable the button
-    else:
-        button.config(state=tk.DISABLED)  # Disable the button
+app = CTk()
 
-root = tk.Tk()
-root.title("Checkbox and Button Example")
+tabview = customtkinter.CTkTabview(master=app)
+tabview.pack(padx=20, pady=20)
 
-# Variable to hold the state of the checkbox
-check_var = tk.IntVar()
+tabview.add("tab 1")  # add tab at the end
+tabview.add("tab 2")  # add tab at the end
+tabview.set("tab 2")  # set currently visible tab
 
-# Create a checkbox
-checkbox = tk.Checkbutton(root, text="Enable Button", variable=check_var, command=toggle_button_state)
-checkbox.pack(padx=10, pady=10)
+button = customtkinter.CTkButton(master=tabview.tab("tab 1"))
+button.pack(padx=20, pady=20)
 
-# Create a button initially disabled
-button = tk.Entry(root, state=tk.DISABLED)
-button.pack(padx=10, pady=10)
-
-root.mainloop()
+app.mainloop()
