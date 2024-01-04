@@ -1,27 +1,41 @@
 import tkinter as tk
 
-def get_nested_entry_value():
-    # Access the Entry widget inside the nested frame
-    nested_entry_value = nested_entry.get()
-    print("Nested Entry value:", nested_entry_value)
+class RadioButtonFrame(tk.Frame):
+    def __init__(self, master=None):
+        super().__init__(master)
+        self.master = master
+        self.create_widgets()
 
-root = tk.Tk()
-root.title("Get Entry Value Inside Nested Frames")
+    def create_widgets(self):
+        self.radio_var = tk.StringVar()
+        self.radio_var.set("Option 1")  # Set default value for the radio buttons
 
-# Create the outer frame
-outer_frame = tk.Frame(root)
-outer_frame.pack(padx=20, pady=20)
+        # Create radio buttons
+        self.radio_button1 = tk.Radiobutton(self, text="Option 1", variable=self.radio_var, value="Option 1")
+        self.radio_button2 = tk.Radiobutton(self, text="Option 2", variable=self.radio_var, value="Option 2")
+        self.radio_button3 = tk.Radiobutton(self, text="Option 3", variable=self.radio_var, value="Option 3")
 
-# Create a frame inside the outer frame
-inner_frame = tk.Frame(outer_frame)
-inner_frame.pack(padx=10, pady=10)
+        # Pack radio buttons
+        self.radio_button1.pack(anchor=tk.W)
+        self.radio_button2.pack(anchor=tk.W)
+        self.radio_button3.pack(anchor=tk.W)
 
-# Create an Entry widget inside the inner frame
-nested_entry = tk.Entry(inner_frame)
-nested_entry.pack(padx=5, pady=5)
+        # Display a button to show the selected option
+        self.show_button = tk.Button(self, text="Show Selected", command=self.show_selected)
+        self.show_button.pack(pady=10)
 
-# Create a button to get the value from the nested Entry widget
-get_value_button = tk.Button(inner_frame, text="Get Nested Entry Value", command=get_nested_entry_value)
-get_value_button.pack(padx=5, pady=5)
+    def show_selected(self):
+        selected_option = self.radio_var.get()
+        print(f"Selected option: {selected_option}")
 
-root.mainloop()
+class MainApplication(tk.Tk):
+    def __init__(self):
+        super().__init__()
+        self.title("Radio Button Example")
+
+        radio_frame = RadioButtonFrame(self)
+        radio_frame.pack(padx=20, pady=20)
+
+if __name__ == "__main__":
+    app = MainApplication()
+    app.mainloop()

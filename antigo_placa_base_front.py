@@ -1,12 +1,11 @@
 from tkinter import *
 import tkinter as tk
-from calc_placa_base import *
 import customtkinter
 from customtkinter import *
 from PIL import Image
 
 MainWindow = customtkinter.CTk()
-MainWindow.title("Cálculo de Placa de Base")
+MainWindow.title("Cálculo de Placa de Base - Ver. 1.0")
 MainWindow.geometry("800x860+250+100")
 
 #VARIÁVEIS GLOBAIS
@@ -37,8 +36,6 @@ def calcular():
      else:
           qtd_chumb_c = cbm_qtd_chum_eng.get()
      
-     calculo = Calc_Placa_Base_Souza( mom_c, axial_c, cortante_c, b_c, l_c, a2_concr_c, fck_c, fy_pb_c, fu_pb_c, fy_chumb_c, fu_chumb_c, d_chumb_c, \
-                                     d_c, bf_c, vinculo_pb, a1_c, qtd_chumb_c)
 
 def muda_status_botao_a2():
  if check_var.get() == 1: 
@@ -115,7 +112,7 @@ def radiobutton_event():
          plota_pb_art()
     else:
          plota_pb_eng()
-    
+
 
 #FRAMES MASTERS
 FrameSUP = CTkFrame(MainWindow, border_width= 2)
@@ -286,4 +283,7 @@ btn_apag.grid(row = 1, column = 1, pady = 5)
 txt_res = CTkTextbox(FrameRES, width = 350, height= 560)
 txt_res.grid(row =2, column = 0 , columnspan = 2, padx = 10, pady = (10,10))
 
+
 MainWindow.mainloop()
+
+

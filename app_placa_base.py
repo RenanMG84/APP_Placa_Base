@@ -1,6 +1,171 @@
+from tkinter import *
+import tkinter as tk
+from customtkinter import *
 import math
+ 
+class Principal(tk.Tk):
+     def __init__(self):
+        super().__init__()
+        self.title("Cálculo de Placa de Base - Ver. 1.0")
+        #self.geometry("800x860+250+100")
 
-#unidades = sempre usar kN e cm para cálculo! Converter as unidades apenas na apresentação dos resultados
+        #Organização dos frames--------------------------------------
+        #Menu superior
+        self.menu_sup = Criar_Menu(self)
+        #Frame de botões abaixo do menu
+        self.frm_botoes = Frame_Botoes(self)
+        self.frm_botoes.grid(row = 0, column = 0, columnspan= 2)
+        #Frame de desenho da placa de base
+        self.frm_desenho = Frame_Desenho_PB(self)
+        self.frm_desenho.grid(row=1, column=0, columnspan= 2)
+        #Frame resultados
+        self.frm_result = Frame_Resultados(self)
+        self.frm_result.grid(row=2, column = 0)
+        #Frame esforços
+        self.frm_esforcos = Frame_Esforcos(self)
+        self.frm_esforcos.grid(row=2, column = 1)
+        
+class Frame_Desenho_PB(tk.Frame):
+     def __init__(self, master = None, frame_height=300, frame_width=600):
+        super().__init__(master, height = frame_height, width=frame_width, bg="lightblue")
+        self.pack_propagate(False)  # Prevent frame from adjusting to its contents
+        label1 = CTkLabel(self, text = "FRAME DESENHO")
+        label1.pack()
+        
+
+class Frame_Resultados(tk.Frame):    
+     def __init__(self, master = None,  frame_height=400, frame_width=300):
+        super().__init__(master, height = frame_height, width=frame_width)
+        self.pack_propagate(False)  # Prevent frame from adjusting to its contents
+        self.criando_widgets()
+    
+     def criando_widgets(self):
+        self.radio_var = IntVar()
+
+        #Label
+        label1 = CTkLabel(self, text = "RESULTADOS", text_color='blue')
+        label1.grid(row = 0, column = 0, columnspan = 2)
+
+        #Radiobutton
+        rad1 = tk.Radiobutton(self, text= 'Simplificado', command=self.evento_radiobutton, variable= self.radio_var, value=1)
+        rad1.grid(row = 1, column = 0 )
+        rad2 = tk.Radiobutton(self, text= 'Completo', command=self.evento_radiobutton, variable= self.radio_var, value=2)
+        rad2.grid(row = 1, column = 1)
+        rad1.select()
+
+        #TextBox
+        txt_resul = CTkTextbox(self, height=380, width= 270)
+        txt_resul.grid( row = 2, column = 0, columnspan = 2)
+
+     def evento_radiobutton():
+         pass
+
+class Frame_Esforcos(tk.Frame):
+     def __init__(self, master = None,  frame_height=400, frame_width=300):
+        super().__init__(master, height = frame_height, width=frame_width, bg="lightgreen")
+        self.pack_propagate(False)  # Prevent frame from adjusting to its contents
+        label1 = CTkLabel(self, text = "FRAME ESFORÇOS")
+        label1.pack()
+
+class Frame_Botoes(tk.Frame):
+     def __init__(self, master = None):
+        super().__init__(master)
+        btn_esf = CTkButton(self, text="Esforços", command= self.abrir_esf)
+        btn_esf.pack(side = LEFT, padx = 5)
+        btn_mat = CTkButton(self, text="Materiais", command = self.abrir_materiais)
+        btn_mat.pack(side = LEFT, padx = 5)
+        btn_geo = CTkButton(self, text="Geometria", command= self.abrir_geometria)
+        btn_geo.pack(side = LEFT, padx = 5)
+        btn_calc = CTkButton(self, text="Calcular", command= self.calcular)
+        btn_calc.pack(side = LEFT, padx = 5)
+
+     def abrir_esf(self):
+         frame_esf = Menu_Esforcos(self)
+
+     def abrir_materiais(self):
+         frame_esf = Menu_Materiais(self)
+
+     def abrir_geometria(self):
+         frame_esf = Menu_Geometria(self)  
+    
+     def calcular(self):
+         pass
+
+class Menu_Esforcos(tk.Toplevel):
+     def __init__(self, master = None):
+        super().__init__(master)
+        self.title("")
+        Frame1 = CTkFrame(self, width = 200, border_width= 2)
+        Frame1.pack(side = LEFT, expand = TRUE, fill = BOTH)
+        label_tit1 = CTkLabel(Frame1, text = "ESFORÇOS", text_color='blue')
+        label_tit1.grid(row = 0, column = 0, columnspan = 3, pady = 10)
+        label_for = CTkLabel(Frame1, text = "Força Axial")
+        label_for.grid(row = 1, column = 0, stick = 'e', padx = 15)
+        entry_axi = CTkEntry(Frame1, width=60)
+        entry_axi.grid(row = 1, column = 1, pady = 5)
+        label_mm10 = CTkLabel(Frame1, text = 'kN')
+        label_mm10.grid(row = 1, column = 2, padx = 10, sticky = 'w')
+        label_cor = CTkLabel(Frame1, text = "Força Cortante")
+        label_cor.grid(row = 2, column = 0, stick = 'e', padx = 15)
+        entry_cor = CTkEntry(Frame1, width=60)
+        entry_cor.grid(row = 2, column = 1, pady = 5)
+        label_mm11 = CTkLabel(Frame1, text = 'kN')
+        label_mm11.grid(row = 2, column = 2, padx = 10, sticky = 'w')
+        label_mom = CTkLabel(Frame1, text = "Momento Fletor")
+        label_mom.grid(row = 3, column = 0, stick = 'e', padx = 15)
+        entry_mom = CTkEntry(Frame1, width=60)
+        entry_mom.grid(row = 3, column = 1, pady = (5, 10))
+        label_mm12 = CTkLabel(Frame1, text = 'kN*m')
+        label_mm12.grid(row = 3, column = 2, padx = 10)
+
+class Menu_Materiais(tk.Toplevel):
+    def __init__(self, master = None):
+        super().__init__(master)
+
+class Menu_Geometria(tk.Toplevel):
+    def __init__(self, master = None):
+        super().__init__(master)
+
+class Criar_Menu:
+     def __init__(self, root):
+          self.root = root
+          #cria o menu
+          self.menubar = tk.Menu(self.root)
+          #Arquivo
+          self.arquivo = tk.Menu(self.menubar, tearoff=0)
+          self.arquivo.add_command(label="Abrir", command= self.abrir_menu)
+          self.arquivo.add_command(label="Salvar", command = self.salvar_menu)
+          self.arquivo.add_command(label="Sair", command= self.sair_menu)
+          self.menubar.add_cascade(label="Arquivo", menu= self.arquivo)
+          self.root.config(menu= self.menubar)
+          #Editar
+          self.editar = tk.Menu(self.menubar, tearoff=0)
+          self.editar.add_command(label= 'Chumbadores')
+          self.editar.add_command(label = 'Critérios')
+          self.menubar.add_cascade(label = "Editar", menu = self.editar)
+          self.root.config(menu = self.menubar)
+          #Utilitários
+          self.uti = tk.Menu(self.menubar, tearoff=0)
+          self.uti.add_command(label = "Exportar Memorial")
+          self.menubar.add_cascade(label = "Utilitários", menu =self.uti)
+          self.root.config(menu = self.menubar)
+          #Sobre
+          self.sobre = tk.Menu(self.menubar, tearoff=0)
+          self.menubar.add_cascade(label = "Sobre", menu = self.sobre)
+          self.root.config(menu = self.menubar)
+
+     def abrir_menu(self):
+          filedialog.askopenfilename(
+               initialdir="/",
+               title="Abrir arquivo",
+               filetypes=( "Todos os arquivos", "*.*"))
+
+     def salvar_menu(self):
+          pass
+
+     def sair_menu(self):
+          self.root.destroy()
+
 class Calc_Placa_Base_Souza():
     def __init__(self, momento, axial, cortante, b, l, a2_conc, fck, fy_pb, fu_pb, \
                  fy_chumb, fu_chumb, d_chumb, d, bf, vinculo_pb, a1_pb, qtd_chumb, \
@@ -26,9 +191,7 @@ class Calc_Placa_Base_Souza():
         self.neta2 = neta2
         self.neta3 = neta3
         self.alpha = alpha
-        self.diam = [0.635, 0.8, 1.27, 1.59, 1.91, 2.22, 2.54, 3.18, 4.13, 4.45] #diametros comerciais de chapas
-
-    #FUNÇÕES--------------------------------------------------------------------------------------     
+        self.diam = [0.635, 0.8, 1.27, 1.59, 1.91, 2.22, 2.54, 3.18, 4.13, 4.45] #diametros comerciais de chapas  
 
     #Define se a placa é rotulada ou engastada
     def define_art_eng(self):
@@ -187,8 +350,7 @@ class Calc_Placa_Base_Souza():
                 break
         
         self.chumb_eng(y, fpd)
-        
-        
+         
 
     #calcula chumbador p/ placa de base articulada
     def chumb_art(self):
@@ -258,16 +420,9 @@ class Calc_Placa_Base_Souza():
         lbnec = self.alpha * lb
 
 
-#placa = Calc_Placa_Base_Souza(12047, 14.9, 44, 32, 42, 1344, 2, 25, 40, 25, 40, 2.54, 24.6, 25.6, "engastado", 4.35, 10, 1, 1, 1, 0.7)
-placa = Calc_Placa_Base_Souza(100, 500, 44, 32, 42, 1344, 2, 25, 40, 25, 40, 2.54, 24.6, 25.6, "engastado", 4.35, 10, 1, 1, 1, 0.7)
-placa.define_art_eng()
+def main():
+    app = Principal()
+    app.mainloop()
 
-
-
-
-
-    
-
-    
-
-    
+if __name__ == "__main__":
+    main()
