@@ -1,42 +1,45 @@
 from tkinter import *
 import tkinter as tk
 from customtkinter import *
+import customtkinter as ctk
 import math
  
 class Principal(tk.Tk):
      def __init__(self):
         super().__init__()
         self.title("Cálculo de Placa de Base - Ver. 1.0")
-        #self.geometry("800x860+250+100")
+        self.geometry("+600+100")
 
         #Organização dos frames--------------------------------------
         #Menu superior
         self.menu_sup = Criar_Menu(self)
         #Frame de botões abaixo do menu
         self.frm_botoes = Frame_Botoes(self)
-        self.frm_botoes.grid(row = 0, column = 0, columnspan= 2)
+        self.frm_botoes.grid(row = 0, column = 0, columnspan= 2, padx= 5)
         #Frame de desenho da placa de base
         self.frm_desenho = Frame_Desenho_PB(self)
-        self.frm_desenho.grid(row=1, column=0, columnspan= 2)
+        self.frm_desenho.grid(row=1, column=0, columnspan= 2, pady  =2)
         #Frame resultados
         self.frm_result = Frame_Resultados(self)
-        self.frm_result.grid(row=2, column = 0)
+        self.frm_result.grid(row=2, column = 0, sticky= 'nswe', padx = (5,0), pady = 2)
         #Frame esforços
         self.frm_esforcos = Frame_Esforcos(self)
-        self.frm_esforcos.grid(row=2, column = 1)
+        self.frm_esforcos.grid(row=2, column = 1, sticky= 'nswe', padx = (0, 5),pady = 2)
         
-class Frame_Desenho_PB(tk.Frame):
-     def __init__(self, master = None, frame_height=300, frame_width=600):
-        super().__init__(master, height = frame_height, width=frame_width, bg="lightblue")
+class Frame_Desenho_PB(CTkFrame):
+     def __init__(self, master = None, frame_height=300, frame_width=600,  frame_border_width = 2):
+        super().__init__(master, height = frame_height, width=frame_width, border_width= frame_border_width)
         self.pack_propagate(False)  # Prevent frame from adjusting to its contents
-        label1 = CTkLabel(self, text = "FRAME DESENHO")
-        label1.pack()
+        quadro = tk.Canvas(self, width=550, height=300)
+        quadro.pack(padx = 5, pady = 10)
         
 
-class Frame_Resultados(tk.Frame):    
-     def __init__(self, master = None,  frame_height=400, frame_width=300):
-        super().__init__(master, height = frame_height, width=frame_width)
+class Frame_Resultados(CTkFrame):    
+     def __init__(self, master = None,  frame_height=400, frame_width=400, frame_border_width = 2):
+        super().__init__(master, height = frame_height, width=frame_width, border_width= frame_border_width)
         self.pack_propagate(False)  # Prevent frame from adjusting to its contents
+        self.columnconfigure(0,weight= 1)
+        self.columnconfigure(1,weight= 1)
         self.criando_widgets()
     
      def criando_widgets(self):
@@ -44,28 +47,28 @@ class Frame_Resultados(tk.Frame):
 
         #Label
         label1 = CTkLabel(self, text = "RESULTADOS", text_color='blue')
-        label1.grid(row = 0, column = 0, columnspan = 2)
+        label1.grid(row = 0, column = 0, pady = 2, columnspan = 2)
 
         #Radiobutton
         rad1 = tk.Radiobutton(self, text= 'Simplificado', command=self.evento_radiobutton, variable= self.radio_var, value=1)
-        rad1.grid(row = 1, column = 0 )
+        rad1.grid(row = 1, column = 0)
         rad2 = tk.Radiobutton(self, text= 'Completo', command=self.evento_radiobutton, variable= self.radio_var, value=2)
         rad2.grid(row = 1, column = 1)
         rad1.select()
 
         #TextBox
-        txt_resul = CTkTextbox(self, height=380, width= 270)
-        txt_resul.grid( row = 2, column = 0, columnspan = 2)
+        txt_resul = CTkTextbox(self, height=350, width= 350)
+        txt_resul.grid( row = 2, column = 0, columnspan = 2, pady = 5)
 
      def evento_radiobutton():
          pass
 
-class Frame_Esforcos(tk.Frame):
-     def __init__(self, master = None,  frame_height=400, frame_width=300):
-        super().__init__(master, height = frame_height, width=frame_width, bg="lightgreen")
+class Frame_Esforcos(CTkFrame):
+     def __init__(self, master = None,  frame_height=400, frame_width=200, frame_border_width = 2):
+        super().__init__(master, height = frame_height, width=frame_width, border_width= frame_border_width)
         self.pack_propagate(False)  # Prevent frame from adjusting to its contents
-        label1 = CTkLabel(self, text = "FRAME ESFORÇOS")
-        label1.pack()
+        label1 = CTkLabel(self, text = "ESFORÇOS", text_color='blue')
+        label1.pack(pady = 2)
 
 class Frame_Botoes(tk.Frame):
      def __init__(self, master = None):
@@ -95,6 +98,7 @@ class Menu_Esforcos(tk.Toplevel):
      def __init__(self, master = None):
         super().__init__(master)
         self.title("")
+        self.geometry('250x200+700+300')
         Frame1 = CTkFrame(self, width = 200, border_width= 2)
         Frame1.pack(side = LEFT, expand = TRUE, fill = BOTH)
         label_tit1 = CTkLabel(Frame1, text = "ESFORÇOS", text_color='blue')
@@ -121,50 +125,288 @@ class Menu_Esforcos(tk.Toplevel):
 class Menu_Materiais(tk.Toplevel):
     def __init__(self, master = None):
         super().__init__(master)
+        self.check_var = tk.IntVar()
+        self.criando_widgets()
+
+    def criando_widgets(self):
+        #Label concreto
+        self.label_concreto = tk.LabelFrame(self, text='Concreto')
+        self.label_concreto.grid(row = 0 , column= 0, padx = 10, pady = 5 )
+        self.label_for = CTkLabel(self.label_concreto, text = "Fck")
+        self.label_for.grid(row = 0, column = 0, stick = 'e', padx = 5)
+        self.entry_fck = CTkEntry(self.label_concreto, width=60)
+        self.entry_fck.grid(row = 0, column = 1, pady = 5)
+        self.entry_fck.insert(0,'25')
+        self.label_mm13 = CTkLabel(self.label_concreto, text = 'MPa')
+        self.label_mm13.grid(row = 0, column = 2, padx = 10, sticky = 'w')
+        self.label_a2 = CTkLabel(self.label_concreto, text = "Área da base")
+        self.label_a2.grid(row = 1, column = 0, stick = 'e', padx = 5)
+        self.entry_a2concr = CTkEntry(self.label_concreto, width=60)
+        self.entry_a2concr.grid(row = 1, column = 1, pady = 5)
+        self.label_mm14 = CTkLabel(self.label_concreto, text = 'cm2')
+        self.label_mm14.grid(row = 1, column = 2, padx = 10, sticky = 'w')
+        self.check1 = tk.Checkbutton(self.label_concreto, text= 'Usar mesma área da placa base', variable= self.check_var, command= self.muda_status_botao_a2)
+        self.check1.grid(row = 2, column = 0, columnspan = 3, pady = 10, padx = 10)
+        
+        #Label Aço PB
+        self.label_aco_pb = tk.LabelFrame(self, text='Aço da placa de base')
+        self.label_aco_pb.grid( row = 1, column= 0 , sticky= 'nsew', padx = 10, pady = 5)
+        self.label_fy_pb = CTkLabel(self.label_aco_pb, text = "Fy")
+        self.label_fy_pb.grid(row = 1, column = 0, padx = 5)
+        self.entry_fy_pb = CTkEntry(self.label_aco_pb, width=40)
+        self.entry_fy_pb.grid(row = 1, column = 1, pady = 5)
+        self.entry_fy_pb.insert(0,'250')
+        self.label_mm15 = CTkLabel(self.label_aco_pb, text = 'MPa')
+        self.label_mm15.grid(row = 1, column = 2, padx = 10, sticky = 'w')
+        self.label_fu_pb = CTkLabel(self.label_aco_pb, text = "Fu")
+        self.label_fu_pb.grid(row = 2, column = 0, padx = 5)
+        self.entry_fu_pb = CTkEntry(self.label_aco_pb, width=40)
+        self.entry_fu_pb.grid(row = 2, column = 1, pady = (5,10))
+        self.entry_fu_pb.insert(0,'400')
+        self.label_mm15 = CTkLabel(self.label_aco_pb, text = 'MPa')
+        self.label_mm15.grid(row = 2, column = 2, padx = 10, sticky = 'w')
+
+        #Label Aço Chumbador
+        self.label_aco_chumb = tk.LabelFrame(self, text='Aço do chumbador')
+        self.label_aco_chumb.grid( row = 2, column= 0 , sticky= 'nsew', padx = 10, pady = 5)
+        self.label_fy_chumb = CTkLabel(self.label_aco_chumb, text = "Fy")
+        self.label_fy_chumb.grid(row = 1, column = 0, stick = 'e', padx = 5)
+        self.entry_fy_chumb = CTkEntry(self.label_aco_chumb, width=40)
+        self.entry_fy_chumb.grid(row = 1, column = 1, pady = 5)
+        self.entry_fy_chumb.insert(0,'250')
+        self.label_mm15 = CTkLabel(self.label_aco_chumb, text = 'MPa')
+        self.label_mm15.grid(row = 1, column = 2, padx = 10, sticky = 'w')
+        self.label_fu_chumb = CTkLabel(self.label_aco_chumb, text = "Fu")
+        self.label_fu_chumb.grid(row = 2, column = 0, stick = 'e', padx = 5)
+        self.entry_fu_chumb = CTkEntry(self.label_aco_chumb, width=40)
+        self.entry_fu_chumb.grid(row = 2, column = 1, pady = (5,10))
+        self.entry_fu_chumb.insert(0,'400')
+        self.label_mm15 = CTkLabel(self.label_aco_chumb, text = 'MPa')
+        self.label_mm15.grid(row = 2, column = 2, padx = 10, sticky = 'w')
+        self.label_mm16 = CTkLabel(self.label_aco_chumb, text = 'Diâmetro')
+        self.label_mm16.grid(row = 3, column = 0,  padx = (5,0), sticky = 'e')
+
+    def muda_status_botao_a2(self):
+        if self.check_var.get() == 1: 
+            self.entry_a2concr.configure(state = 'disabled', fg_color = 'gray')
+            self.entry_a2concr.delete(0, 'end')
+        else:
+            self.entry_a2concr.configure(state = 'normal', fg_color = 'white')
+
+class Menu_Criterios(tk.Toplevel):
+    def __init__(self, master = None):
+        super().__init__(master)
+        self.criando_widgets()
+
+    def criando_widgets(self):
+        #LabelFrame
+        self.label_crit_chumb = tk.LabelFrame(self, text='Critérios para chumbadores')
+        self.label_crit_chumb.grid(row = 0, column= 0, padx = 10, pady = 5)
+        #labels
+        self.label_cri1 = CTkLabel(self.label_crit_chumb, text = 'Dist. chumbador/borda:')
+        self.label_un1 = CTkLabel(self.label_crit_chumb, text = 'mm')
+        #widgets
+        self.entry_cri1 = CTkEntry(self.label_crit_chumb, width=40)
+        #grids
+        self.label_cri1.grid(row = 0 , column= 0)
+        self.entry_cri1.grid(row = 0 , column= 1)
+        self.label_un1.grid(row = 0 , column= 2, padx = 10, pady = 5 )
+        
+        
+        
+
+    
+    
 
 class Menu_Geometria(tk.Toplevel):
     def __init__(self, master = None):
         super().__init__(master)
+        self.vinculo_placa = IntVar()
+        self.criando_widgets()
+        self.title("Parâmetros da placa de base")
+        self.grab_set()
 
+    def alterna_frames(self):
+        #Alterna entre os frames 2 e 3
+        if self.vinculo_placa.get() == 2:
+            self.frame3.grid(row= 2 , column= 0)
+            self.frame2.grid_forget()
+        else:
+            self.frame2.grid(row= 1 , column= 0)
+            self.frame3.grid_forget()
+        
+
+    def criando_widgets(self):
+        #Frame 1 - Label Vínculo PB
+        self.frame1 = tk.Frame(self)
+        self.frame1.grid(row= 0 , column= 0)
+        self.label_tip_pb1 = tk.LabelFrame(self.frame1, text='Vínculo da placa de base')
+        self.label_tip_pb1.grid(row=0, column= 0 )
+        self.rad_art = tk.Radiobutton(self.label_tip_pb1, text = 'Articulado', variable= self.vinculo_placa,command = self.alterna_frames, value = 1)
+        self.rad_art.grid(row = 1, column = 0 )
+        self.rad_eng = tk.Radiobutton(self.label_tip_pb1, text = 'Engastado', variable= self.vinculo_placa, command = self.alterna_frames, value = 2)
+        self.rad_eng.grid(row = 1, column = 1 )
+        self.rad_eng.select()
+
+        #Frame 2 - Parâmetros para desenho da PB articulada
+        self.frame2 = tk.Frame(self)
+        #self.frame2.grid(row= 1 , column= 0)
+        self.label_tip_pb2 = tk.LabelFrame(self.frame2, text='Placa de base articulada')
+        self.label_tip_pb2.grid(row=0, column= 0 )
+        #Labels
+        self.label_d = CTkLabel(self.label_tip_pb2, text = "d")
+        self.label_mm1 = CTkLabel(self.label_tip_pb2, text = 'mm')
+        self.label_mm2 = CTkLabel(self.label_tip_pb2, text = 'mm')
+        self.label_mm3 = CTkLabel(self.label_tip_pb2, text = 'mm')
+        self.label_mm4 = CTkLabel(self.label_tip_pb2, text = 'mm')
+        self.label_l = CTkLabel(self.label_tip_pb2, text = 'L')
+        self.label_b = CTkLabel(self.label_tip_pb2, text = 'B')
+        self.label_bf = CTkLabel(self.label_tip_pb2, text = 'bf')
+        self.label_n_chum = CTkLabel(self.label_tip_pb2, text = "Qtd. Chumbadores")     
+        self.label_d_chum = CTkLabel(self.label_tip_pb2, text = "Diâmetro")     
+        #Widgets
+        self.entry_d = CTkEntry(self.label_tip_pb2, width=40)
+        self.entry_l = CTkEntry(self.label_tip_pb2, width=40)
+        self.entry_b = CTkEntry(self.label_tip_pb2, width=40)
+        self.entry_bf = CTkEntry(self.label_tip_pb2, width=40)
+        self.cbm_qtd_chum_art = CTkComboBox(self.label_tip_pb2, values=['2'], width = 70, state='readonly')
+        self.cbm_qtd_chum_art.set('2')
+        self.check_area = tk.Checkbutton(self.label_tip_pb2, text='Calcular área da placa otimizada')
+        self.cbm_dia1 = CTkComboBox(self.label_tip_pb2, values=['6,3', '8,0', '9,52', '12,7', '16,0', '19,1', '22,2', '25,4', '31,8', '41,3'], width = 70)
+        #Grids
+        self.label_l.grid(row = 0, column = 0 , stick = 'e', padx = 10)
+        self.entry_l.grid(row = 0, column = 1, pady = 5)
+        self.label_b.grid(row = 0, column = 3 , stick = 'e', padx = 10)
+        self.label_bf.grid(row = 1, column = 3 , stick = 'e', padx = 10)
+        self.entry_b.grid(row = 0, column = 4, pady = 5)
+        self.entry_bf.grid(row = 1, column = 4, pady = 5)
+        self.label_d.grid(row = 1, column = 0, stick = 'e', padx = 10)
+        self.entry_d.grid(row = 1, column = 1, pady = (5, 10))
+        self.label_mm1.grid(row = 1, column = 2, padx = 10)
+        self.label_mm2.grid(row = 0, column = 2, padx = 10)
+        self.label_mm3.grid(row = 0, column = 5, padx = 10)
+        self.label_mm4.grid(row = 1, column = 5, padx = 10)
+        self.label_n_chum.grid(row = 2, column = 0, stick = 'e', columnspan = 3, padx = 10, pady = 4)
+        self.label_d_chum.grid(row = 3, column = 0, stick = 'e', columnspan = 3, padx = 10, pady = 4)
+        self.cbm_qtd_chum_art.grid(row = 2, column = 3, columnspan = 2)
+        self.cbm_dia1.grid(row = 3, column = 3, columnspan = 2)
+        self.check_area.grid(row= 4, column = 0, columnspan= 5)
+
+
+        #Frame 3 - Parâmetros para desenho da PB engastada
+        self.frame3 = tk.Frame(self)
+        self.frame3.grid(row= 2 , column= 0)
+        self.label_tip_pb3 = tk.LabelFrame(self.frame3, text='Placa de base engastada')
+        self.label_tip_pb3.grid(row=0, column= 0 )
+        #Labels
+        self.label_a1 = CTkLabel(self.label_tip_pb3, text = "a1")
+        self.label_mm1 = CTkLabel(self.label_tip_pb3, text = 'mm')
+        self.label_mm2 = CTkLabel(self.label_tip_pb3, text = 'mm')
+        self.label_mm3 = CTkLabel(self.label_tip_pb3, text = 'mm')
+        self.label_mm4 = CTkLabel(self.label_tip_pb3, text = 'mm')
+        self.label_mm5 = CTkLabel(self.label_tip_pb3, text = 'mm')
+        self.label_mm6 = CTkLabel(self.label_tip_pb3, text = 'mm')
+        self.label_mm7 = CTkLabel(self.label_tip_pb3, text = 'mm')
+        self.label_a2 = CTkLabel(self.label_tip_pb3, text = 'a2')
+        self.label_a3 = CTkLabel(self.label_tip_pb3, text = 'a3')
+        self.label_bf = CTkLabel(self.label_tip_pb3, text = 'bf')
+        self.label_d = CTkLabel(self.label_tip_pb3, text = 'd')
+        self.label_e = CTkLabel(self.label_tip_pb3, text = 'e')
+        self.label_n_chum = CTkLabel(self.label_tip_pb3, text = "Qtd. Chumbadores")
+        self.label_d_chum = CTkLabel(self.label_tip_pb3, text = "Diâmetro") 
+        #Widgets
+        self.entry_a1 = CTkEntry(self.label_tip_pb3, width=40)
+        self.entry_a2 = CTkEntry(self.label_tip_pb3, width=40)
+        self.entry_a3 = CTkEntry(self.label_tip_pb3, width=40)
+        self.entry_e = CTkEntry(self.label_tip_pb3, width=40)
+        self.entry_bf = CTkEntry(self.label_tip_pb3, width=40)
+        self.entry_d = CTkEntry(self.label_tip_pb3, width=40)
+        self.cbm_qtd_chum_art = CTkComboBox(self.label_tip_pb3, values=['4','6','8','10','12'], width = 70, state='readonly')
+        self.cbm_qtd_chum_art.set('4')
+        self.cbm_dia2 = CTkComboBox(self.label_tip_pb3, values=['6,3', '8,0', '9,52', '12,7', '16,0', '19,1', '22,2', '25,4', '31,8', '41,3'], width = 70)
+        #Grids
+        self.label_a1.grid(row = 0, column = 0 , stick = 'e', padx = 10)
+        self.entry_a1.grid(row = 0, column = 1, pady = 5)
+        self.label_a2.grid(row = 0, column = 3 , stick = 'e', padx = 10)
+        self.label_e.grid(row = 1, column = 3 , stick = 'e', padx = 10)
+        self.label_bf.grid(row = 2, column = 3 , stick = 'e', padx = 10)
+        self.label_d.grid(row = 2, column = 0 , stick = 'e', padx = 10)
+        self.entry_bf.grid(row = 2, column = 4, pady = 5)
+        self.entry_d.grid(row = 2, column = 1, pady = 5)
+        self.entry_a2.grid(row = 0, column = 4, pady = 5)
+        self.entry_e.grid(row = 1, column = 4, pady = 5)
+        self.label_a3.grid(row = 1, column = 0, stick = 'e', padx = 10)
+        self.entry_a3.grid(row = 1, column = 1, pady = (5, 10))
+        self.label_mm1.grid(row = 1, column = 2, padx = 10)
+        self.label_mm2.grid(row = 0, column = 2, padx = 10)
+        self.label_mm3.grid(row = 0, column = 5, padx = 10)
+        self.label_mm4.grid(row = 1, column = 5, padx = 10)
+        self.label_mm5.grid(row = 2, column = 5, padx = 10)
+        self.label_mm6.grid(row = 2, column = 5, padx = 10)
+        self.label_mm7.grid(row = 2, column = 2, padx = 10)
+        self.label_n_chum.grid(row = 4, column = 0, stick = 'e', columnspan = 3, padx = 10)
+        self.cbm_qtd_chum_art.grid(row = 4, column = 3, columnspan = 2)
+        self.cbm_dia2.grid(row = 5, column = 3, columnspan = 2)
+        self.label_d_chum.grid(row = 5, column = 0, stick = 'e', columnspan = 3, padx = 10, pady = 4)
+
+        #Frame 4 - Desenhando PB
+        self.frame4 = tk.Frame(self)
+        self.frame4.grid(row=3, column=0)
+        self.quadro1 = Canvas(self.frame4, width=400, height=300, bg = 'red')
+        self.quadro1.grid(row=0, column=0)
+
+    def vinculo_pb(self):
+        pass
+
+class Menu_Sobre(tk.Toplevel):
+     def __init__(self, master = None):
+        super().__init__(master)
+        self.title("Sobre")
+        label_1 = CTkLabel(self, text="Aqui vai o texto de criação do app")
+        label_1.pack()
+
+#Classe utilizada para criação do menu superior
 class Criar_Menu:
-     def __init__(self, root):
-          self.root = root
-          #cria o menu
-          self.menubar = tk.Menu(self.root)
-          #Arquivo
-          self.arquivo = tk.Menu(self.menubar, tearoff=0)
-          self.arquivo.add_command(label="Abrir", command= self.abrir_menu)
-          self.arquivo.add_command(label="Salvar", command = self.salvar_menu)
-          self.arquivo.add_command(label="Sair", command= self.sair_menu)
-          self.menubar.add_cascade(label="Arquivo", menu= self.arquivo)
-          self.root.config(menu= self.menubar)
-          #Editar
-          self.editar = tk.Menu(self.menubar, tearoff=0)
-          self.editar.add_command(label= 'Chumbadores')
-          self.editar.add_command(label = 'Critérios')
-          self.menubar.add_cascade(label = "Editar", menu = self.editar)
-          self.root.config(menu = self.menubar)
-          #Utilitários
-          self.uti = tk.Menu(self.menubar, tearoff=0)
-          self.uti.add_command(label = "Exportar Memorial")
-          self.menubar.add_cascade(label = "Utilitários", menu =self.uti)
-          self.root.config(menu = self.menubar)
-          #Sobre
-          self.sobre = tk.Menu(self.menubar, tearoff=0)
-          self.menubar.add_cascade(label = "Sobre", menu = self.sobre)
-          self.root.config(menu = self.menubar)
+    def __init__(self, root):
+        self.root = root
+        #cria o menu
+        self.menubar = tk.Menu(self.root)
+        #Arquivo
+        self.arquivo = tk.Menu(self.menubar, tearoff=0)
+        self.arquivo.add_command(label="Abrir", command= self.abrir_menu)
+        self.arquivo.add_command(label="Salvar", command = self.salvar_menu)
+        self.arquivo.add_command(label="Sair", command= self.sair_menu)
+        self.menubar.add_cascade(label="Arquivo", menu= self.arquivo)
+        self.root.config(menu= self.menubar)
+        #Editar
+        self.editar = tk.Menu(self.menubar, tearoff=0)
+        self.editar.add_command(label= 'Critérios', command = self.menu_criterios)
+        self.editar.add_command(label = 'Exportar memorial')
+        self.menubar.add_cascade(label = "Editar", menu = self.editar)
+        self.root.config(menu = self.menubar)
+        #Sobre
+        self.sobre = tk.Menu(self.menubar, tearoff=0)
+        self.sobre.add_command(label = 'Sobre', command= self.sobre_menu)
+        self.menubar.add_cascade(label = "Sobre", menu = self.sobre)
+        self.root.config(menu = self.menubar)
 
-     def abrir_menu(self):
-          filedialog.askopenfilename(
-               initialdir="/",
-               title="Abrir arquivo",
-               filetypes=( "Todos os arquivos", "*.*"))
+    def abrir_menu(self):
+        filedialog.askopenfilename(
+            initialdir="/",
+            title="Abrir arquivo",
+            filetypes=( "Todos os arquivos", "*.*"))
 
-     def salvar_menu(self):
-          pass
+    def salvar_menu(self):
+        pass
 
-     def sair_menu(self):
-          self.root.destroy()
+    def menu_criterios(self):
+        abre_menu_criterio = Menu_Criterios()
+
+    def sobre_menu(self):
+        abre_menu_sobre = Menu_Sobre()
+
+    def sair_menu(self):
+        self.root.destroy()
 
 class Calc_Placa_Base_Souza():
     def __init__(self, momento, axial, cortante, b, l, a2_conc, fck, fy_pb, fu_pb, \
@@ -418,6 +660,7 @@ class Calc_Placa_Base_Souza():
 
         #ancoragem necessaria
         lbnec = self.alpha * lb
+
 
 
 def main():
