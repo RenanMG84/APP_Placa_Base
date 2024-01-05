@@ -1,18 +1,14 @@
 import tkinter as tk
 
-def open_new_window():
-    top = tk.Toplevel(root)
-    top.title("Toplevel Window")
-    label = tk.Label(top, text="This is a Toplevel window")
-    label.pack()
-
-    # Make the Toplevel window grab the focus and prevent interaction with the root window
-    top.grab_set()
-
 root = tk.Tk()
-root.title("Main Window")
+root.title("Special Characters in Tkinter")
 
-button = tk.Button(root, text="Open New Window", command=open_new_window)
-button.pack()
+# Using Unicode characters directly in strings
+label_unicode = tk.Label(root, text="Unicode Characters: \u00A9 \u03A9 \u2665")
+label_unicode.pack()
+
+# Using ASCII codes (using chr() function)
+label_ascii = tk.Label(root, text="ASCII Characters: " + chr(951) + " " + chr(2340) + " " + chr(9829))
+label_ascii.pack()
 
 root.mainloop()

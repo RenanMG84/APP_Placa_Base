@@ -1,8 +1,9 @@
 from tkinter import *
 import tkinter as tk
 from customtkinter import *
-import customtkinter as ctk
+import customtkinter
 import math
+from PIL import Image
  
 class Principal(tk.Tk):
      def __init__(self):
@@ -196,27 +197,47 @@ class Menu_Materiais(tk.Toplevel):
 class Menu_Criterios(tk.Toplevel):
     def __init__(self, master = None):
         super().__init__(master)
+        self.radio_var_n1 = IntVar()
+        self.radio_var_n2 = IntVar()
+        self.title('Comprimento de ancoragem dos chumbadores')
         self.criando_widgets()
+    
+    def n1(self):
+        pass
+
+    def n2(self):
+        pass
 
     def criando_widgets(self):
-        #LabelFrame
-        self.label_crit_chumb = tk.LabelFrame(self, text='Critérios para chumbadores')
-        self.label_crit_chumb.grid(row = 0, column= 0, padx = 10, pady = 5)
+        #LabelFrame - n1
+        self.label_n1 = tk.LabelFrame(self, text=chr(951) + '1 - Rugosidade da barra')
+        self.label_n1.grid(row = 1, column= 0, padx = 10, pady = 5, sticky= 'nsew')
         #labels
-        self.label_cri1 = CTkLabel(self.label_crit_chumb, text = 'Dist. chumbador/borda:')
-        self.label_un1 = CTkLabel(self.label_crit_chumb, text = 'mm')
+        self.label_tit1 = CTkLabel(self, text= 'Comprimento de ancoragem dos chumbadores', text_color='blue', padx = 10)
         #widgets
-        self.entry_cri1 = CTkEntry(self.label_crit_chumb, width=40)
+        self.radio_n1_1 = tk.Radiobutton(self.label_n1, text= 'Barras lisas (= 1,0)', command=self.n1, variable= self.radio_var_n1, value=1 )
+        self.radio_n1_2 = tk.Radiobutton(self.label_n1, text= 'Barras entalhadas (= 1,4)', command=self.n1, variable= self.radio_var_n1, value=2)
+        self.radio_n1_3 = tk.Radiobutton(self.label_n1, text= 'Barras nervuradas (= 2,25)', command=self.n1, variable= self.radio_var_n1, value=3)
+        self.radio_n1_3.select()
         #grids
-        self.label_cri1.grid(row = 0 , column= 0)
-        self.entry_cri1.grid(row = 0 , column= 1)
-        self.label_un1.grid(row = 0 , column= 2, padx = 10, pady = 5 )
-        
-        
-        
+        self.label_tit1.grid(row = 0 , column = 0, columnspan = 2) 
+        self.radio_n1_1.grid(row = 1 , column= 0, sticky= 'w')
+        self.radio_n1_2.grid(row = 2 , column= 0, sticky= 'w')
+        self.radio_n1_3.grid(row = 3 , column= 0, sticky= 'w')
 
-    
-    
+        #LabelFrame - n2
+        self.label_n2 = tk.LabelFrame(self, text=chr(951) + '2 - Posição da barra na peça')
+        self.label_n2.grid(row = 2, column= 0, padx = 10, pady = 5, sticky= 'nsew')
+        #labels
+        self.label_tit2 = CTkLabel(self, text= 'Comprimento de ancoragem dos chumbadores ', text_color='blue', padx = 10)
+        #widgets
+        self.radio_n2_1 = tk.Radiobutton(self.label_n2, text= 'Boa aderência (= 1,0)', command=self.n2, variable= self.radio_var_n2, value=1 )
+        self.radio_n2_2 = tk.Radiobutton(self.label_n2, text= 'Má aderência (= 0,7)', command=self.n2, variable= self.radio_var_n2, value=2)
+        self.radio_n2_2.select()
+        #grids
+        self.label_tit2.grid(row = 0 , column = 0, columnspan = 2) 
+        self.radio_n2_1.grid(row = 1 , column= 0, sticky= 'w')
+        self.radio_n2_2.grid(row = 2 , column= 0, sticky= 'w') 
 
 class Menu_Geometria(tk.Toplevel):
     def __init__(self, master = None):
@@ -229,17 +250,23 @@ class Menu_Geometria(tk.Toplevel):
     def alterna_frames(self):
         #Alterna entre os frames 2 e 3
         if self.vinculo_placa.get() == 2:
-            self.frame3.grid(row= 2 , column= 0)
+            self.frame3.grid(row= 2 , column= 0, sticky= 'nsew')
             self.frame2.grid_forget()
+            self.my_image = customtkinter.CTkImage(light_image = Image.open("placa_eng.png"), size=(400, 400))
+            self.image_label = CTkLabel(self.frame4, image= self.my_image, text='')  # display image with a CTkLabel
+            self.image_label.grid(row = 6, column = 0, columnspan = 6, padx = 10, pady = (0,10))
+
         else:
-            self.frame2.grid(row= 1 , column= 0)
-            self.frame3.grid_forget()
-        
+            self.frame2.grid(row= 1 , column= 0, sticky= 'nsew')
+            self.frame3.grid_forget()    
+            self.my_image = customtkinter.CTkImage(light_image = Image.open("placa_art.png"), size=(400, 400))
+            self.image_label = CTkLabel(self.frame4, image= self.my_image, text='')  # display image with a CTkLabel
+            self.image_label.grid(row = 6, column = 0, columnspan = 6, padx = 10, pady = (0,10))
 
     def criando_widgets(self):
         #Frame 1 - Label Vínculo PB
         self.frame1 = tk.Frame(self)
-        self.frame1.grid(row= 0 , column= 0)
+        self.frame1.grid(row= 0 , column= 0, sticky= 'nsew')
         self.label_tip_pb1 = tk.LabelFrame(self.frame1, text='Vínculo da placa de base')
         self.label_tip_pb1.grid(row=0, column= 0 )
         self.rad_art = tk.Radiobutton(self.label_tip_pb1, text = 'Articulado', variable= self.vinculo_placa,command = self.alterna_frames, value = 1)
@@ -252,7 +279,7 @@ class Menu_Geometria(tk.Toplevel):
         self.frame2 = tk.Frame(self)
         #self.frame2.grid(row= 1 , column= 0)
         self.label_tip_pb2 = tk.LabelFrame(self.frame2, text='Placa de base articulada')
-        self.label_tip_pb2.grid(row=0, column= 0 )
+        self.label_tip_pb2.grid(row=0, column= 0, sticky= 'nsew')
         #Labels
         self.label_d = CTkLabel(self.label_tip_pb2, text = "d")
         self.label_mm1 = CTkLabel(self.label_tip_pb2, text = 'mm')
@@ -295,7 +322,7 @@ class Menu_Geometria(tk.Toplevel):
 
         #Frame 3 - Parâmetros para desenho da PB engastada
         self.frame3 = tk.Frame(self)
-        self.frame3.grid(row= 2 , column= 0)
+        self.frame3.grid(row= 2 , column= 0, sticky= 'nsew')
         self.label_tip_pb3 = tk.LabelFrame(self.frame3, text='Placa de base engastada')
         self.label_tip_pb3.grid(row=0, column= 0 )
         #Labels
@@ -311,7 +338,7 @@ class Menu_Geometria(tk.Toplevel):
         self.label_a3 = CTkLabel(self.label_tip_pb3, text = 'a3')
         self.label_bf = CTkLabel(self.label_tip_pb3, text = 'bf')
         self.label_d = CTkLabel(self.label_tip_pb3, text = 'd')
-        self.label_e = CTkLabel(self.label_tip_pb3, text = 'e')
+        self.label_e = CTkLabel(self.label_tip_pb3, text = 'E')
         self.label_n_chum = CTkLabel(self.label_tip_pb3, text = "Qtd. Chumbadores")
         self.label_d_chum = CTkLabel(self.label_tip_pb3, text = "Diâmetro") 
         #Widgets
@@ -352,8 +379,9 @@ class Menu_Geometria(tk.Toplevel):
         #Frame 4 - Desenhando PB
         self.frame4 = tk.Frame(self)
         self.frame4.grid(row=3, column=0)
-        self.quadro1 = Canvas(self.frame4, width=400, height=300, bg = 'red')
-        self.quadro1.grid(row=0, column=0)
+        self.my_image = customtkinter.CTkImage(light_image = Image.open("placa_eng.png"), size=(400, 400))
+        self.image_label = CTkLabel(self.frame4, image= self.my_image, text='')  # display image with a CTkLabel
+        self.image_label.grid(row = 6, column = 0, columnspan = 6, padx = 10, pady = (0,10))
 
     def vinculo_pb(self):
         pass
