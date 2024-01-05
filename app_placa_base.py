@@ -4,6 +4,7 @@ from customtkinter import *
 import customtkinter
 import math
 from PIL import Image
+from tkinter import ttk
  
 class Principal(tk.Tk):
      def __init__(self):
@@ -84,7 +85,7 @@ class Frame_Botoes(tk.Frame):
         btn_calc.pack(side = LEFT, padx = 5)
 
      def abrir_esf(self):
-         frame_esf = Menu_Esforcos(self)
+         frame_esf = Menu_Esforcos_Tab(self)
 
      def abrir_materiais(self):
          frame_esf = Menu_Materiais(self)
@@ -122,6 +123,82 @@ class Menu_Esforcos(tk.Toplevel):
         entry_mom.grid(row = 3, column = 1, pady = (5, 10))
         label_mm12 = CTkLabel(Frame1, text = 'kN*m')
         label_mm12.grid(row = 3, column = 2, padx = 10)
+
+class Menu_Esforcos_Tab(tk.Toplevel):
+    def __init__(self, master = None):
+        super().__init__(master)
+        #FRAME 1
+        self.frame1 = Frame(self)
+        self.frame1.grid(row = 0, column= 0)
+        self.btn_add = CTkButton(self.frame1, text = "Adicionar", command= self.adicionar)
+        self.btn_add.grid(row = 0, column = 0, padx = 20, pady = 10)
+        self.btn_rem = CTkButton(self.frame1, text= 'Apagar', command= self.apagar)
+        self.btn_rem.grid(row = 0, column = 1, padx = 20, pady = 10)
+
+        #FRAME 2
+        #labels
+        self.frame2 = Frame(self)
+        self.frame2.grid(row = 1, column= 0)
+        self.label = CTkLabel(self.frame2, text= 'Combinação a ser inserida')
+        self.label.grid(row = 1, column = 0)
+        self.label68 = CTkLabel(self.frame2, text= 'Unid.: (kN) e (kN*m)')
+        self.label68.grid(row = 2, column = 0)
+
+        #FRAME 3
+        self.frame3 = Frame(self)
+        self.frame3.grid(row=2, column= 0, columnspan= 3 )
+        self.label1 = CTkLabel(self.frame3, text = 'Nsd')
+        self.label2 = CTkLabel(self.frame3, text = 'Vsd')
+        self.label3 = CTkLabel(self.frame3, text = 'Msd')
+        #grids
+        self.label1.grid(row = 0, column = 0)
+        self.label2.grid(row = 0, column = 1)
+        self.label3.grid(row = 0, column = 2)
+        #entrys
+        self.ent_nsd = CTkEntry(self.frame3, width = 70)
+        self.ent_vsd = CTkEntry(self.frame3, width = 70)
+        self.ent_msd = CTkEntry(self.frame3, width = 70)
+        #grids
+        self.ent_nsd.grid(row = 1, column = 0)
+        self.ent_vsd.grid(row = 1, column = 1)
+        self.ent_msd.grid(row = 1, column = 2)
+        
+        #FRAME 4
+        self.frame4 = Frame(self)
+        self.frame4.grid(row=3, column= 0)
+        #Treeview
+        self.tree_comb = ttk.Treeview(self.frame4, columns=('1', '2', '3'), show = 'headings')
+        self.tree_comb.column('1', width=70)
+        self.tree_comb.column('2', width=70) 
+        self.tree_comb.column('3', width=70)
+        self.tree_comb.heading('1', text= 'Nsd')
+        self.tree_comb.heading('2', text= 'Vsd')
+        self.tree_comb.heading('3', text= 'Msd')
+        self.tree_comb.pack(pady = 10)
+
+        #FRAME 5
+        self.frame5 = Frame(self)
+        self.frame5.grid(row=4, column= 0)
+        self.btn_ok = CTkButton(self.frame5, text = "OK")
+        self.btn_ok.pack(pady = 10)
+
+
+    
+    def apagar(self):
+       selected_item = self.tree_comb.selection()[0]
+       self.tree_comb.delete(selected_item)
+
+    def adicionar(self):
+       nsd = self.ent_nsd.get()
+       vsd = self.ent_vsd.get()
+       msd = self.ent_msd.get()
+       self.tree_comb.insert('', 'end', values= (nsd, vsd, msd))
+ 
+       
+        
+  
+
+
 
 class Menu_Materiais(tk.Toplevel):
     def __init__(self, master = None):
