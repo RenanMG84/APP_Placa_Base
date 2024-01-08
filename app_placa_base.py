@@ -182,8 +182,6 @@ class Menu_Esforcos_Tab(tk.Toplevel):
         self.btn_ok = CTkButton(self.frame5, text = "OK")
         self.btn_ok.pack(pady = 10)
 
-
-    
     def apagar(self):
        selected_item = self.tree_comb.selection()[0]
        self.tree_comb.delete(selected_item)
@@ -194,11 +192,6 @@ class Menu_Esforcos_Tab(tk.Toplevel):
        msd = self.ent_msd.get()
        self.tree_comb.insert('', 'end', values= (nsd, vsd, msd))
  
-       
-        
-  
-
-
 
 class Menu_Materiais(tk.Toplevel):
     def __init__(self, master = None):
